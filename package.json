@@ -28,6 +28,8 @@
     "event-stream": "~3.0.14",
     "split": "~0.2.5",
     "through": "~2.3.4",
-    "slice-file": "~0.2.0"
+    "slice-file": "~0.2.0",
+    "request": "~2.21.0",
+    "async": "~0.2.8"
   }
 }
