@@ -1,7 +1,6 @@
 var fs = require('fs')
 var path = require('path')
 var LogParser = require('./lib/heroku_log_parser.js')
-var hstate = require('./lib/heroku_state.js')
 var through = require('through')
 
 var optimist = require('optimist')
@@ -24,6 +23,20 @@ console.log('Opening', watchContext.file, 'located in', watchContext.path)
 var model = {}
 var readOffset = 0
 
+function buildLogParser(model) {
+  var logParser = new LogParser(model)
+
+  logParser.on('newservice', function(service){
+    console.log('newservice', service)
+  })
+
+  logParser.on('statechangeservice', function(service){
+    console.log('statechangeservice', service)
+  })
+
+  return logParser
+}
+
 
 function watchFile() {
 
@@ -44,7 +57,7 @@ function watchFile() {
         readOffset = stat.size
         fs.createReadStream(argv.file, {start: startOffset, end: readOffset})
           .pipe(split())
-          .pipe(new LogParser(model))
+          .pipe(buildLogParser(model))
       })
     }
   })
@@ -52,21 +65,22 @@ function watchFile() {
 var domain = require('domain')
 var d = domain.create()
 
-d.on('error', function(er) {
-  console.error('error', er.stack)
+d.on('error', function (er) {
+  console.error('error', er)
 })
 
 d.add(argv)
 d.add(readOffset)
 
-d.run(function() {
+d.run(function () {
+
   fs.stat(argv.file, function (err, stat) {
     if (err) throw err
     readOffset = stat.size
     fs.createReadStream(argv.file, {encoding: 'utf8'})
       .on('end', watchFile)
       .pipe(split())
-      .pipe(new LogParser(model))
+      .pipe(buildLogParser(model))
   })
 })
 
