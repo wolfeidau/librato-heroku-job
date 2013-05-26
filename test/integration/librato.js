@@ -10,27 +10,11 @@ describe('Librato API', function () {
 
   it('should retrieve a list of metrics', function (done) {
 
-
-/*
-    async.queue(function(metric, options, callback){
-
-      librato.updateMetric(metric, options, function(err, data){
-
-        if(err)
-
-      })
-
-
-    }, 20)
-*/
-
     var regexRss = /.*\.rss/
 
     function processResults(data){
       data.metrics.forEach(function(metric){
-        if(regexRss.exec(metric.name)){
-          console.log('metric', metric)
-        }
+          //console.log('metric', metric)
       })
     }
 
