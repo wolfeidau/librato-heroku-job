@@ -3,7 +3,7 @@ var path = require('path')
 var through = require('through')
 var optimist = require('optimist')
 var sf = require('slice-file')
-var LogParser = require('./lib/heroku_log_parser.js')
+var LogParser = require('heroku-events')
 
 process.title = 'librato-heroku-job'
 
